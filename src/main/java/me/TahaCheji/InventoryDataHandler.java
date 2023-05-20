@@ -7,7 +7,6 @@ import me.TahaCheji.objects.DatabaseInventoryData;
 import me.TahaCheji.objects.InventorySyncData;
 import me.TahaCheji.objects.InventorySyncTask;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
