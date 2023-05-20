@@ -125,6 +125,41 @@ public class InvMysqlInterface {
 		}
         return false;
 	}
+
+	public boolean setData(OfflinePlayer player, String inventory, String armor, String syncComplete) {
+		if (!hasAccount(player)) {
+			createAccount(player);
+		}
+		PreparedStatement preparedUpdateStatement = null;
+		Connection conn = inv.getDatabaseManager().getConnection();
+		if (conn != null) {
+			try {
+				String data = "UPDATE `" + inv.getConfigHandler().getString("database.mysql.tableName") + "` " + "SET `player_name` = ?" + ", `inventory` = ?" + ", `armor` = ?" + ", `sync_complete` = ?" + ", `last_seen` = ?" + " WHERE `player_uuid` = ?";
+				preparedUpdateStatement = conn.prepareStatement(data);
+				preparedUpdateStatement.setString(1, player.getName());
+				preparedUpdateStatement.setString(2, inventory);
+				preparedUpdateStatement.setString(3, armor);
+				preparedUpdateStatement.setString(4, syncComplete);
+				preparedUpdateStatement.setString(5, String.valueOf(System.currentTimeMillis()));
+				preparedUpdateStatement.setString(6, player.getUniqueId().toString());
+
+				preparedUpdateStatement.executeUpdate();
+				return true;
+			} catch (SQLException e) {
+				Inv.log.warning("Error: " + e.getMessage());
+				e.printStackTrace();
+			} finally {
+				try {
+					if (preparedUpdateStatement != null) {
+						preparedUpdateStatement.close();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return false;
+	}
 	
 	public boolean setSyncStatus(Player player, String syncStatus) {
 		PreparedStatement preparedUpdateStatement = null;

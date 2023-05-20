@@ -9,7 +9,7 @@ database:
         #Database name (NOTE! You need to create the database, then the plugin will create the tables.)
         databaseName: 'mafanation'
         #Tables name (the plugin will auto create it)
-        tableName: 'miapi_inventory'
+        tableName: 'players_inventory'
         #User name
         user: 'root'
         #User password

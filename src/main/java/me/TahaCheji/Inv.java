@@ -48,13 +48,6 @@ public class Inv extends JavaPlugin {
 	@Override
     public void onEnable() {
 		instance = this;
-		String token = "";
-		try {
-			builder = JDABuilder.createDefault(token).build();
-		} catch (LoginException e) {
-			e.printStackTrace();
-		}
-		builder.addEventListener(new InventoryCommand());
 		log = getLogger();
     	configHandler = new ConfigHandler(this);
     	sH = new SoundHandler(this);

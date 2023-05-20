@@ -7,6 +7,7 @@ import me.TahaCheji.objects.DatabaseInventoryData;
 import me.TahaCheji.objects.InventorySyncData;
 import me.TahaCheji.objects.InventorySyncTask;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,7 +16,9 @@ public class InventoryDataHandler {
 	
 	private Inv pd;
 	private Set<Player> playersInSync = new HashSet<Player>();
+	private Set<OfflinePlayer> playersOfflineInSync = new HashSet<OfflinePlayer>();
 	private Set<Player> playersDisconnectSave = new HashSet<Player>();
+	private Set<OfflinePlayer> playersOfflineDisconnectSave = new HashSet<OfflinePlayer>();
 	
 	public InventoryDataHandler(Inv pd) {
 		this.pd = pd;
@@ -30,6 +33,11 @@ public class InventoryDataHandler {
 	}
 	
 	private void dataCleanup(Player p) {
+		playersInSync.remove(p);
+		playersDisconnectSave.remove(p);
+	}
+
+	private void dataCleanup(OfflinePlayer p) {
 		playersInSync.remove(p);
 		playersDisconnectSave.remove(p);
 	}
@@ -102,6 +110,49 @@ public class InventoryDataHandler {
 						armor = encodeItems(armorDisconnect);
 					} else {
 						armor = encodeItems(p.getInventory().getArmorContents());
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			pd.getInvMysqlInterface().setData(p, inv, armor, syncStatus);
+		}
+		if (datacleanup == true) {
+			dataCleanup(p);
+		}
+	}
+
+	public void onDataSaveFunction(OfflinePlayer p, Boolean datacleanup, String syncStatus, ItemStack[] inventoryDisconnect, ItemStack[] armorDisconnect) {
+		if (playersDisconnectSave.contains(p) == true) {
+			if (pd.getConfigHandler().getBoolean("Debug.InventorySync") == true) {
+				Inv.log.info("Inventory Debug - Save Data - Canceled - " + p.getName());
+			}
+			return;
+		}
+		if (datacleanup == true) {
+			playersOfflineDisconnectSave.add(p);
+		}
+		boolean isPlayerInSync = playersInSync.contains(p);
+		if (isPlayerInSync == true) {
+			String inv = "none";
+			String armor = "none";
+			if (pd.getConfigHandler().getBoolean("Debug.InventorySync") == true) {
+				Inv.log.info("Inventory Debug - Save Data - Start - " + p.getName());
+			}
+			try {
+				if (inventoryDisconnect != null) {
+					if (pd.getConfigHandler().getBoolean("Debug.InventorySync") == true) {
+						Inv.log.info("Inventory Debug - Set Data - Saving disconnect inventory - " + p.getName());
+					}
+					inv = encodeItems(inventoryDisconnect);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (pd.getConfigHandler().getBoolean("General.syncArmorEnabled") == true) {
+				try {
+					if (inventoryDisconnect != null) {
+						armor = encodeItems(armorDisconnect);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
