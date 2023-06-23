@@ -5,11 +5,8 @@ import me.TahaCheji.Inv;
 import me.TahaCheji.InventoryDataHandler;
 import me.TahaCheji.objects.DatabaseInventoryData;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,7 +35,7 @@ public class InventoryCommand extends ListenerAdapter implements Listener {
         if (e.getMessage().getContentRaw().contains("!Inv")) {
             String[] args = e.getMessage().getContentRaw().split(" ");
             if (args.length == 1) {
-                e.getChannel().sendMessage("Error: !Inventory [Player Name]").queue();
+                e.getChannel().sendMessage("Error: !Inv [Player Name]").queue();
                 return;
             }
             OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
@@ -67,7 +64,7 @@ public class InventoryCommand extends ListenerAdapter implements Listener {
         embed.setTitle(title);
         embed.setDescription(description);
         embed.setFooter(footer);
-        channel.sendMessage(embed.build()).queue();
+        channel.sendMessage((CharSequence) embed.build()).queue();
     }
 
 }
