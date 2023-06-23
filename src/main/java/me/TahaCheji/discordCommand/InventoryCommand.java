@@ -51,8 +51,8 @@ public class InventoryCommand extends ListenerAdapter implements Listener {
                         continue;
                     }
                     items.add(itemStack.getItemMeta().getDisplayName());
-                    sendEmbed(e.getChannel(), player.getName() + " Inventory", items.toString(), "This is all logged in a data base");
                 }
+                sendEmbed(e.getChannel(), player.getName() + " Inventory", items.toString(), "This is all logged in a data base");
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -64,7 +64,7 @@ public class InventoryCommand extends ListenerAdapter implements Listener {
         embed.setTitle(title);
         embed.setDescription(description);
         embed.setFooter(footer);
-        channel.sendMessage((CharSequence) embed.build()).queue();
+        channel.sendMessageEmbeds(embed.build()).queue();
     }
 
 }
