@@ -20,6 +20,7 @@ public class GamePlayerInventory {
     public Player gamePlayer;
     public OfflinePlayer offlinePlayer;
 
+
     public GamePlayerInventory(Player gamePlayer) throws Exception {
         this.gamePlayer = gamePlayer;
         DatabaseInventoryData data = Inv.getInstance().getInvMysqlInterface().getData(gamePlayer.getPlayer());
