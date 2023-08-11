@@ -61,21 +61,26 @@ public class GamePlayerInventory {
 
     public void removeItem(ItemStack itemStack) {
         List<ItemStack> itemStacks = getInventoryItems();
+        List<ItemStack> updatedItemStacks = new ArrayList<>();
 
-        Iterator<ItemStack> iterator = itemStacks.iterator();
-        while (iterator.hasNext()) {
-            ItemStack item = iterator.next();
+        for (ItemStack item : itemStacks) {
+            if(item == null) {
+                continue;
+            }
+            if(item.getItemMeta() == null) {
+                continue;
+            }
             String itemUUID = new NBTItem(item).getString("GameItemUUID");
             String targetUUID = new NBTItem(itemStack).getString("GameItemUUID");
 
-            if (itemUUID.equalsIgnoreCase(targetUUID)) {
-                iterator.remove();
-                break;  // Stop after removing the first matching item
+            if (!itemUUID.equalsIgnoreCase(targetUUID)) {
+                updatedItemStacks.add(item);
             }
         }
 
-        setInventoryItems(itemStacks);
+        setInventoryItems(updatedItemStacks);
     }
+
 
     public void addArmorItem(ItemStack armorItem) {
         List<ItemStack> armorItems = getInventoryArmor();
@@ -83,28 +88,37 @@ public class GamePlayerInventory {
         setInventoryArmor(armorItems);
     }
 
-    public void removeArmorItem(ItemStack armorItem) {
-        List<ItemStack> armorItems = getInventoryArmor();
+    public void removeArmor(ItemStack itemStack) {
+        List<ItemStack> itemStacks = getInventoryArmor();
+        List<ItemStack> updatedItemStacks = new ArrayList<>();
 
-        Iterator<ItemStack> iterator = armorItems.iterator();
-        while (iterator.hasNext()) {
-            ItemStack item = iterator.next();
+        for (ItemStack item : itemStacks) {
+            if(item == null) {
+                continue;
+            }
+            if(item.getItemMeta() == null) {
+                continue;
+            }
             String itemUUID = new NBTItem(item).getString("GameItemUUID");
-            String targetUUID = new NBTItem(armorItem).getString("GameItemUUID");
+            String targetUUID = new NBTItem(itemStack).getString("GameItemUUID");
 
-            if (itemUUID.equalsIgnoreCase(targetUUID)) {
-                iterator.remove();
-                break;  // Stop after removing the first matching armor item
+            if (!itemUUID.equalsIgnoreCase(targetUUID)) {
+                updatedItemStacks.add(item);
             }
         }
 
-        setInventoryArmor(armorItems);
+        setInventoryArmor(updatedItemStacks);
     }
+
 
 
     public void setInventoryArmor(List<ItemStack> inventoryArmor) {
         this.inventoryArmor = inventoryArmor;
         Player player = gamePlayer.getPlayer();
+        if(player == null) {
+            saveOfflineInventory(getInventoryItems(), inventoryArmor, offlinePlayer);
+            return;
+        }
         if(player.isOnline()){
             player.getInventory().setArmorContents(inventoryArmor.toArray(new ItemStack[0]));
 
@@ -117,6 +131,10 @@ public class GamePlayerInventory {
 
     public void setInventoryItems(List<ItemStack> inventoryItems) {
         Player player = gamePlayer.getPlayer();
+        if(player == null) {
+            saveOfflineInventory(inventoryItems, getInventoryArmor(), offlinePlayer);
+            return;
+        }
         this.inventoryItems = inventoryItems;
         if(player.isOnline()){
             player.getInventory().clear(); // Clear the player's current inventory
@@ -131,7 +149,6 @@ public class GamePlayerInventory {
             return;
 
         }
-        saveOfflineInventory(inventoryItems, getInventoryArmor(), player);
     }
 
     public void setInventoryArmor(List<ItemStack> inventoryArmor, OfflinePlayer player) {

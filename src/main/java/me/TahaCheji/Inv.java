@@ -49,7 +49,7 @@ public class Inv extends JavaPlugin {
 	
 	@Override
     public void onEnable() {
-		String token = "";
+		String token = "MTEyMTkyMDUzMDUxODM5NzAyOQ.Gf_U6a.GE_u1wftzRPpUiWEpunkchyEwRzTJOjo1C3D5I";
 		builder = JDABuilder.createDefault(token)
 				.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.DIRECT_MESSAGE_REACTIONS
 						,GatewayIntent.GUILD_MESSAGE_REACTIONS)

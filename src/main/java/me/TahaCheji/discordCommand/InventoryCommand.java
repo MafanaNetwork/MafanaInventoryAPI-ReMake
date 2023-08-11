@@ -1,6 +1,7 @@
 package me.TahaCheji.discordCommand;
 
 
+import me.TahaCheji.GamePlayerInventory;
 import me.TahaCheji.Inv;
 import me.TahaCheji.InventoryDataHandler;
 import me.TahaCheji.objects.DatabaseInventoryData;
@@ -39,6 +40,7 @@ public class InventoryCommand extends ListenerAdapter implements Listener {
                 return;
             }
             OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+
             if (!player.hasPlayedBefore()) {
                 e.getChannel().sendMessage("Error: That player does not exist").queue();
                 return;
