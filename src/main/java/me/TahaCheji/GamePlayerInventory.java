@@ -20,29 +20,31 @@ public class GamePlayerInventory {
     public Player gamePlayer;
     public OfflinePlayer offlinePlayer;
 
+    Inv inv = null;
 
-    public GamePlayerInventory(Player gamePlayer) throws Exception {
+    public GamePlayerInventory(Inv inv, Player gamePlayer) throws Exception {
         this.gamePlayer = gamePlayer;
-        DatabaseInventoryData data = Inv.getInstance().getInvMysqlInterface().getData(gamePlayer.getPlayer());
+        DatabaseInventoryData data = inv.getInvMysqlInterface().getData(gamePlayer.getPlayer());
         if(gamePlayer.getPlayer().isOnline()){
             List<ItemStack> pInv = new ArrayList<>();
             for (ItemStack itemStack : gamePlayer.getPlayer().getInventory()){
                 pInv.add(itemStack);
             }
+            this.inv = inv;
             inventoryItems = pInv;
             inventoryArmor = Arrays.asList(gamePlayer.getPlayer().getInventory().getArmorContents());
             return;
         }
 
-        inventoryItems = Arrays.asList(new InventoryDataHandler(Inv.getInstance()).decodeItems(data.getRawInventory()));
-        inventoryArmor = Arrays.asList(new InventoryDataHandler(Inv.getInstance()).decodeItems(data.getRawArmor()));
+        inventoryItems = Arrays.asList(new InventoryDataHandler(inv).decodeItems(data.getRawInventory()));
+        inventoryArmor = Arrays.asList(new InventoryDataHandler(inv).decodeItems(data.getRawArmor()));
     }
 
-    public GamePlayerInventory(OfflinePlayer offlinePlayer) throws Exception {
+    public GamePlayerInventory(Inv inv, OfflinePlayer offlinePlayer) throws Exception {
         this.offlinePlayer = offlinePlayer;
-        DatabaseInventoryData data = Inv.getInstance().getInvMysqlInterface().getData(offlinePlayer);
-        inventoryItems = Arrays.asList(new InventoryDataHandler(Inv.getInstance()).decodeItems(data.getRawInventory()));
-        inventoryArmor = Arrays.asList(new InventoryDataHandler(Inv.getInstance()).decodeItems(data.getRawArmor()));
+        DatabaseInventoryData data = inv.getInvMysqlInterface().getData(offlinePlayer);
+        inventoryItems = Arrays.asList(new InventoryDataHandler(inv).decodeItems(data.getRawInventory()));
+        inventoryArmor = Arrays.asList(new InventoryDataHandler(inv).decodeItems(data.getRawArmor()));
     }
 
     public List<ItemStack> getInventoryArmor() {
@@ -146,7 +148,6 @@ public class GamePlayerInventory {
 
             player.updateInventory(); // Update the player's inventory view
             player.sendMessage(ChatColor.GREEN + "[MafanaInventory Manager]: Your inventory has been updated.");
-            return;
 
         }
     }
@@ -166,9 +167,8 @@ public class GamePlayerInventory {
             try {
                 ItemStack[] inventory = inventoryItems.toArray(new ItemStack[0]);
                 ItemStack[] armor = inventoryArmor.toArray(new ItemStack[0]);
-                Inv.getInstance().getInvMysqlInterface().setData(player,
-                        Inv.getInstance().getInventoryDataHandler().encodeItems(inventory),
-                        Inv.getInstance().getInventoryDataHandler().encodeItems(armor),
+                inv.getInvMysqlInterface().setData(player,
+                        inv.getInventoryDataHandler().encodeItems(inventory),inv.getInventoryDataHandler().encodeItems(armor),
                         "True");
             } catch (Exception e) {
                 e.printStackTrace(); // Log the exception
