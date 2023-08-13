@@ -116,11 +116,11 @@ public class GamePlayerInventory {
 
     public void setInventoryArmor(List<ItemStack> inventoryArmor) {
         this.inventoryArmor = inventoryArmor;
-        Player player = gamePlayer.getPlayer();
-        if(player == null) {
+        if(gamePlayer == null) {
             saveOfflineInventory(getInventoryItems(), inventoryArmor, offlinePlayer);
             return;
         }
+        Player player = gamePlayer.getPlayer();
         if(player.isOnline()){
             player.getInventory().setArmorContents(inventoryArmor.toArray(new ItemStack[0]));
 
@@ -132,12 +132,12 @@ public class GamePlayerInventory {
     }
 
     public void setInventoryItems(List<ItemStack> inventoryItems) {
-        Player player = gamePlayer.getPlayer();
-        if(player == null) {
+        this.inventoryItems = inventoryItems;
+        if(gamePlayer == null) {
             saveOfflineInventory(inventoryItems, getInventoryArmor(), offlinePlayer);
             return;
         }
-        this.inventoryItems = inventoryItems;
+        Player player = gamePlayer.getPlayer();
         if(player.isOnline()){
             player.getInventory().clear(); // Clear the player's current inventory
 
